@@ -1,0 +1,6 @@
+@Rewards_HostAddress = http://localhost:5165
+
+GET {{Rewards_HostAddress}}
+Accept: application/json
+
+###
