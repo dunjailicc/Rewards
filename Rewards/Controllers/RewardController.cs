@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Rewards.Application.DTO;
 using Rewards.Application.Interfaces;
-using Rewards.DataAccess;
 
 namespace Rewards.Controllers
 {
@@ -9,21 +8,19 @@ namespace Rewards.Controllers
     [Route("api/[controller]")]
     public class RewardController : ControllerBase
     {
-        private readonly RewardsDbContext _context;
         private readonly IRewardService _rewardService;
         private readonly ILogger<RewardController> _logger;
 
-        public RewardController(ILogger<RewardController> logger, RewardsDbContext context, IRewardService rewardService)
+        public RewardController(ILogger<RewardController> logger, IRewardService rewardService)
         {
             _logger = logger;
-            _context = context;
             _rewardService = rewardService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] RewardDto reward) { 
-            await _rewardService.CreateRewardAsync(reward);
-            return Created(); // TODO
+        public async Task<IActionResult> PostAsync([FromBody] RewardDto rewardDto) { 
+            var createdReward = await _rewardService.CreateRewardAsync(rewardDto);
+            return Ok(createdReward); 
         }
 
         [HttpGet]
@@ -32,6 +29,25 @@ namespace Rewards.Controllers
         {
             var rewards = await _rewardService.GetRewardsAsync(date, agentId, pageNumber, itemsPerPage);
             return Ok(rewards);
+        }
+
+        [HttpPatch("{rewardId}")]
+        public async Task<IActionResult> PatchAsync(int rewardId, [FromQuery] RewardDto rewardDto)
+        {
+            var updatedReward = await _rewardService.UpdateRewardAsync(rewardId, rewardDto);
+            // TODO - not updated
+            if(updatedReward == null)
+            {
+                return NotFound();
+            }
+            return Ok(updatedReward); 
+        }
+
+        [HttpDelete("{rewardId}")]
+        public async Task<IActionResult> DeleteAsync(int rewardId)
+        {
+            await _rewardService.DeleteRewardAsync(rewardId);
+            return NoContent();
         }
     }
 }

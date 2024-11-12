@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Reward.Application\Rewards.Business.csproj" />
-    <ProjectReference Include="..\Rewards.DataAccess\Rewards.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

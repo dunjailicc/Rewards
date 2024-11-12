@@ -19,6 +19,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IRewardRepository, RewardRepository>();
 builder.Services.AddTransient<IRewardService, RewardService>();
+builder.Services.AddTransient<ICampaignRepository, CampaignRepository>();
+builder.Services.AddTransient<ICampaignService, CampaignService>();
 builder.Services.AddTransient<IPaginationUtils, PaginationUtils>();
 
 var app = builder.Build();

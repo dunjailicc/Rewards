@@ -8,6 +8,10 @@ namespace Rewards.DataAccess.Repositories
         public Task<Reward> CreateRewardAsync(Reward reward);
 
         public Task<PaginatedResult<Reward>> GetRewardsAsync(DateTime? date, int? agentId, int? pageNumber, int? itemsPerPage);
+
+        public Task<Reward> UpdateRewardAsync(int rewardId, Reward reward);
+
+        public Task DeleteRewardAsync(int rewardId);
     }
 
     public class RewardRepository : IRewardRepository
@@ -27,7 +31,6 @@ namespace Rewards.DataAccess.Repositories
             await _dbContext.SaveChangesAsync(); // TODO
 
             return newReward.Entity;
-           // throw new NotImplementedException();
         }
 
         public async Task<PaginatedResult<Reward>> GetRewardsAsync(DateTime? date, int? agentId, int? pageNumber, int? itemsPerPage)
@@ -52,5 +55,37 @@ namespace Rewards.DataAccess.Repositories
 
             return result;
         }
+
+        public async Task<Reward> UpdateRewardAsync(int rewardId, Reward reward)
+        {   
+            var existingReward = await _dbContext.Rewards.FindAsync(rewardId);
+
+            if(existingReward == null) { 
+                // TODO throw Exception
+            }
+
+            existingReward.CustomerId = reward.CustomerId;
+            existingReward.DiscountPercentage = reward.DiscountPercentage;
+            // TODO validate
+            existingReward.ValidFrom = reward.ValidFrom;
+            existingReward.ValidTo = reward.ValidTo;
+
+            await _dbContext.SaveChangesAsync();
+
+            return existingReward;
+        }
+
+        public async Task DeleteRewardAsync(int rewardId)
+        {
+            var rewardById = await _dbContext.Rewards.FindAsync(rewardId);
+
+            if(rewardById == null) {
+                // TODO throw Exception();
+            }
+
+            _dbContext.Rewards.Remove(rewardById);
+            await _dbContext.SaveChangesAsync();
+        }
+
     }
 }

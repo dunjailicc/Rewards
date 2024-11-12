@@ -22,14 +22,26 @@ namespace Rewards.Business.Services
             var createdReward = await _rewardRepository.CreateRewardAsync(rewardFromDto);
 
             return createdReward;
-           // throw new NotImplementedException();
         }
 
         public async Task<PaginatedResult<Reward>> GetRewardsAsync(DateTime? date, int? agentId, int? pageNumber, int? itemsPerPage)
         {
             var rewards = await _rewardRepository.GetRewardsAsync(date, agentId, pageNumber, itemsPerPage);
             return rewards;
-           // throw new NotImplementedException();
         }
+
+        public async Task<Reward> UpdateRewardAsync(int id, RewardDto rewardDto)
+        {   
+            var rewardFromDto = Mapper.Map(rewardDto);
+            var updatedReward = await _rewardRepository.UpdateRewardAsync(id, rewardFromDto);
+
+            return updatedReward;
+        }
+
+        public async Task DeleteRewardAsync(int rewardId)
+        {
+            await _rewardRepository.DeleteRewardAsync(rewardId);
+        }
+
     }
 }
