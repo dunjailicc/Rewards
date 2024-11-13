@@ -22,12 +22,14 @@ namespace Rewards.API.Controllers
         {
             if (campaignDto == null)
             {
-                return BadRequest(); // TODO
+                return BadRequest(); 
             }
 
-            await _campaignService.CreateCampaignAsync(campaignDto);
-            return Created();
+            var createdCampaign = await _campaignService.CreateCampaignAsync(campaignDto);
+            return Ok(createdCampaign);
         }
+
+
 
     }
 }

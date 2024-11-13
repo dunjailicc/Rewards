@@ -19,6 +19,10 @@ namespace Rewards.Controllers
 
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] RewardDto rewardDto) { 
+            if(rewardDto == null)
+            {
+                return BadRequest();
+            }
             var createdReward = await _rewardService.CreateRewardAsync(rewardDto);
             return Ok(createdReward); 
         }

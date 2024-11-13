@@ -1,6 +1,8 @@
+using FluentValidation.AspNetCore;
 using Rewards.Application.Interfaces;
 using Rewards.Application.Pagination;
 using Rewards.Business.Services;
+using Rewards.Business.Validators;
 using Rewards.DataAccess;
 using Rewards.DataAccess.Repositories;
 
@@ -11,6 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<RewardsDbContext>();
 
 builder.Services.AddControllers();
+
+builder.Services.AddMemoryCache();
+
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CampaignValidator>());
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

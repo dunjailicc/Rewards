@@ -14,6 +14,8 @@ namespace Rewards.Business.Helper
             reward.ValidTo = rewardDto.ValidTo;
             reward.AgentId = 1; // ToDo - claims
             reward.CustomerId = rewardDto.CusotmerId;
+            reward.Campaign.Id = rewardDto.CampaignId;
+            reward.DiscountPercentage = rewardDto.DiscountPercentage;
 
             return reward;
         }
@@ -25,7 +27,7 @@ namespace Rewards.Business.Helper
             campaign.Name = campaignDto.Name;
             campaign.ValidFrom = campaignDto.ValidFrom;
             campaign.ValidTo = campaignDto.ValidTo;
-            campaign.adminId = 1; // ToDo - claims
+            campaign.AdminId = 1; // ToDo - claims
 
             return campaign;
         }
