@@ -1,14 +1,13 @@
 using Azure.Storage.Blobs;
-using CsvHelper.Configuration;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Rewards.Business.DTO;
 using Rewards.Business.Services;
+using Rewards.Functions.Models;
 using System.Globalization;
 using System.Text.Json;
-using Rewards.DataAccess.Models;
-using Rewards.Functions.Models;
-using Rewards.Business.DTO;
 
 namespace Rewards.Functions
 {
@@ -47,13 +46,13 @@ namespace Rewards.Functions
                 using (var csv = new CsvReader(reader, config))
                 {
 
-                    var records = new List<PurchaseRecordDto>();
+                    var records = new List<CreatePurchaseRecordDto>();
                     int batchSize = 100;
 
                     // Read records one by one and process in batches
                     while (await csv.ReadAsync())
                     {
-                        var record = csv.GetRecord<PurchaseRecordDto>();
+                        var record = csv.GetRecord<CreatePurchaseRecordDto>();
                         records.Add(record);
 
                         if (records.Count == batchSize)

@@ -1,7 +1,9 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 using Microsoft.AspNetCore.Http;
+using Rewards.Application.Pagination;
 using Rewards.Business.DTO;
+using Rewards.Business.DTO.Filters;
 using Rewards.DataAccess.Models;
 using Rewards.DataAccess.Repositories;
 using System.Text;
@@ -25,7 +27,49 @@ namespace Rewards.Business.Services
             _purchaseReportRepository = purchaseRecordRepository;
         }
 
-        public async Task ProcessBatch(List<PurchaseRecordDto> records, int campaignId)
+        public async Task<PaginatedResult<PurchaseRecordDto>> GetAsync(PurchaseReportFilter filter)
+        {
+            var result = await _purchaseReportRepository.GetAsync(
+                filter.CustomerId, 
+                filter.CampaignId, 
+                filter.PageNumber, 
+                filter.PageSize);
+
+            return new PaginatedResult<PurchaseRecordDto>
+            {
+                CurrentPage = result.CurrentPage,
+                TotalCount = result.TotalCount,
+                TotalPages = result.TotalPages,
+                Items = result.Items.Select(x => new PurchaseRecordDto
+                {
+                    Id = x.Id,
+                    CampaignId = x.CampaignId,
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName
+                }).ToList()
+            };
+        }
+
+        public async Task<PurchaseRecordDto> GetByIdAsync(int id)
+        {
+            var recordFromDb = await _purchaseReportRepository.GetByIdAsync(id);
+
+            if (recordFromDb is null)
+            {
+                throw new Exception("Not found."); // TODO -custom exception
+            }
+
+            return new PurchaseRecordDto
+            {
+                CampaignId = recordFromDb.CampaignId,
+                CustomerId = recordFromDb.CustomerId,
+                CustomerName = recordFromDb.CustomerName,
+                Id = recordFromDb.Id
+            };
+
+        }
+
+        public async Task ProcessBatch(List<CreatePurchaseRecordDto> records, int campaignId)
         {
             await _purchaseReportRepository.AddAsync(records.Select(r => new PurchaseRecord
             {

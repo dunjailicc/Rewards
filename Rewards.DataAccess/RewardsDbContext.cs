@@ -12,7 +12,7 @@ namespace Rewards.DataAccess
         protected override void OnConfiguring(
             DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseInMemoryDatabase("Rewards");
+            optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=Rewards;Integrated Security=True;TrustServerCertificate=true");
         }
     }
 }
