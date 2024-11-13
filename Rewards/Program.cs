@@ -5,6 +5,7 @@ using Rewards.Business.Services;
 using Rewards.Business.Validators;
 using Rewards.DataAccess;
 using Rewards.DataAccess.Repositories;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,14 @@ builder.Services.AddTransient<IRewardRepository, RewardRepository>();
 builder.Services.AddTransient<IRewardService, RewardService>();
 builder.Services.AddTransient<ICampaignRepository, CampaignRepository>();
 builder.Services.AddTransient<ICampaignService, CampaignService>();
+builder.Services.AddTransient<IPurchaseReportService, PurchaseReportService>();
+builder.Services.AddTransient<IPurchaseRecordRepository, PurchaseRecordRepository>();
 builder.Services.AddTransient<IPaginationUtils, PaginationUtils>();
+builder.Services.AddAzureClients(clientBuilder =>
+{
+    clientBuilder.AddBlobServiceClient(builder.Configuration["localstorage:blob"]!, preferMsi: true);
+    clientBuilder.AddQueueServiceClient(builder.Configuration["localstorage:queue"]!, preferMsi: true);
+});
 
 var app = builder.Build();
 

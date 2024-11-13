@@ -9,5 +9,6 @@
         public DateTime ValidTo { get; set; }
 
         public virtual ICollection<Reward> Rewards { get; set; }
+        public virtual ICollection<PurchaseRecord> PurchaseRecords { get; set; }
     }
 }

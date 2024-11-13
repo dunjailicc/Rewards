@@ -18,17 +18,17 @@ namespace Rewards.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] RewardDto rewardDto) { 
-            if(rewardDto == null)
+        public async Task<IActionResult> PostAsync([FromBody] RewardDto rewardDto) {
+            if (rewardDto == null)
             {
                 return BadRequest();
             }
             var createdReward = await _rewardService.CreateRewardAsync(rewardDto);
-            return Ok(createdReward); 
+            return Ok(createdReward);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync([FromQuery] DateTime? date, [FromQuery] int? agentId, 
+        public async Task<IActionResult> GetAsync([FromQuery] DateTime? date, [FromQuery] int? agentId,
             [FromQuery] int? pageNumber, [FromQuery] int? itemsPerPage)
         {
             var rewards = await _rewardService.GetRewardsAsync(date, agentId, pageNumber, itemsPerPage);
@@ -40,11 +40,11 @@ namespace Rewards.Controllers
         {
             var updatedReward = await _rewardService.UpdateRewardAsync(rewardId, rewardDto);
             // TODO - not updated
-            if(updatedReward == null)
+            if (updatedReward == null)
             {
                 return NotFound();
             }
-            return Ok(updatedReward); 
+            return Ok(updatedReward);
         }
 
         [HttpDelete("{rewardId}")]
@@ -53,5 +53,6 @@ namespace Rewards.Controllers
             await _rewardService.DeleteRewardAsync(rewardId);
             return NoContent();
         }
-    }
+
+    }        
 }
