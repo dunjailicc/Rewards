@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.Extensions.Caching.Memory;
 using Rewards.Application.DTO;
 using Rewards.Application.Interfaces;
 using Rewards.Application.Pagination;

@@ -30,7 +30,11 @@ namespace Rewards.API.Controllers
             return Ok(createdCampaign);
         }
 
-
-
+        [HttpGet("{campaignId}")]
+        public async Task<IActionResult> GetByIdAsync(int campaignId)
+        {
+            var campaign = await _campaignService.GetCampaignByIdAsync(campaignId);
+            return Ok(campaign);
+        }
     }
 }

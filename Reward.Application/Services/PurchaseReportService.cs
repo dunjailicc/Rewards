@@ -17,15 +17,18 @@ namespace Rewards.Business.Services
         private readonly BlobServiceClient _blobServiceClient;
         private readonly QueueServiceClient _queueServiceClient;
         private readonly IPurchaseRecordRepository _purchaseReportRepository;
+        private readonly ICampaignRepository _campaignRepository;
 
         public PurchaseReportService(
             BlobServiceClient blobServiceClient, 
             QueueServiceClient queueServiceClient,
-            IPurchaseRecordRepository purchaseRecordRepository)
+            IPurchaseRecordRepository purchaseRecordRepository,
+            ICampaignRepository campaignRepository)
         {
             _blobServiceClient = blobServiceClient;
             _queueServiceClient = queueServiceClient;
             _purchaseReportRepository = purchaseRecordRepository;
+            _campaignRepository = campaignRepository;
         }
 
         public async Task<PaginatedResult<PurchaseRecordDto>> GetAsync(PurchaseReportFilter filter)
@@ -83,7 +86,12 @@ namespace Rewards.Business.Services
 
         public async Task StoreFileAndSendMessageToQueueAsync(int campaignId, IFormFile file)
         {   
-            // TODO - check if campaignId exists in db
+            var campaign = await _campaignRepository.GetCampaignByIdAsync(campaignId);
+            if(campaign is null)
+            {
+                throw new NotFoundException("Campaign not found.");
+            }
+
             if (file is null || !file.FileName.EndsWith(".csv"))
             {
                 throw new InvalidFileFormatException("File must be CSV.");

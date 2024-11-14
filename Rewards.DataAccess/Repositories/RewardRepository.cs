@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Rewards.Application.Pagination;
+﻿using Rewards.Application.Pagination;
 using Rewards.DataAccess.Models;
 
 namespace Rewards.DataAccess.Repositories

@@ -41,7 +41,6 @@ namespace Rewards.Controllers
         public async Task<IActionResult> PatchAsync(int rewardId, [FromQuery] RewardDto rewardDto)
         {
             var updatedReward = await _rewardService.UpdateRewardAsync(rewardId, rewardDto);
-            // TODO - not updated
             if (updatedReward == null)
             {
                 return NotFound();

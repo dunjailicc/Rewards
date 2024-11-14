@@ -27,19 +27,16 @@ namespace Rewards.Functions
         [Function(nameof(ReportMergerFunction))]
         public async Task Run([QueueTrigger("csvreports", Connection = "localstorage")] string message)
         {
-            // Deserijalizujte poruku da dobijete ime fajla
             var purchaseRecord = JsonSerializer.Deserialize<Message>(message);
 
-            // Ovde dodajte logiku za preuzimanje fajla iz Bloba
             var blobClient = _blobServiceClient.GetBlobContainerClient("csvreports");
             var blob = blobClient.GetBlobClient(purchaseRecord.FileName);
 
             using (var stream = await blob.OpenReadAsync())
             {
-                // Configure CsvHelper
                 var config = new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
-                    HasHeaderRecord = true, // Set to false if your CSV doesn't have headers
+                    HasHeaderRecord = true, 
                 };
 
                 using (var reader = new StreamReader(stream))
@@ -49,7 +46,6 @@ namespace Rewards.Functions
                     var records = new List<CreatePurchaseRecordDto>();
                     int batchSize = 100;
 
-                    // Read records one by one and process in batches
                     while (await csv.ReadAsync())
                     {
                         var record = csv.GetRecord<CreatePurchaseRecordDto>();
@@ -57,13 +53,11 @@ namespace Rewards.Functions
 
                         if (records.Count == batchSize)
                         {
-                            // Process the batch of records
                             await _purchaseReportService.ProcessBatch(records, purchaseRecord.CampaignId);
-                            records.Clear(); // Clear the list for the next batch
+                            records.Clear(); 
                         }
                     }
 
-                    // Process any remaining records that didn't fill a complete batch
                     if (records.Any())
                     {
                         await _purchaseReportService.ProcessBatch(records, purchaseRecord.CampaignId);

@@ -36,17 +36,16 @@ builder.Services.AddAuthentication(options =>
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = "your_issuer_here", // Your issuer
-                ValidAudience = "your_audience_here", // Your audience
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JzdWIiOiIxMjM0NTY3ODkwIiwiYXVkIjoieW91cl9hdWRpZW5jZV9oZXJlIiwiaXNzIjoieW91cl9pc3N1ZXJfaGVyZSIsImNsaWVudElkIjoiZmNjY2IwMTQtMDczNS00ZDAzLTliZjgtYTI3YzBmYmJjZDA2IiwiY2xpZW50TmFtZSI6I")) // Your secret key
+                ValidIssuer = "your_issuer_here", 
+                ValidAudience = "your_audience_here", 
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JzdWIiOiIxMjM0NTY3ODkwIiwiYXVkIjoieW91cl9hdWRpZW5jZV9oZXJlIiwiaXNzIjoieW91cl9pc3N1ZXJfaGVyZSIsImNsaWVudElkIjoiZmNjY2IwMTQtMDczNS00ZDAzLTliZjgtYTI3YzBmYmJjZDA2IiwiY2xpZW50TmFtZSI6I")) 
             };
             });
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-    // Or to ignore cycles entirely, use:
-    // options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    
 });
 
 builder.Services.AddMemoryCache();
@@ -60,13 +59,13 @@ builder.Services.AddSwaggerGen(opt =>
 {
     opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        In = ParameterLocation.Header, // The token is expected in the Authorization header
+        In = ParameterLocation.Header, 
         Description = "Please enter 'Bearer' [space] and then your token in the text input below.\n\nExample: \"Bearer 12345abcdef\"",
-        Name = "Authorization", // The name of the header
-        Type = SecuritySchemeType.ApiKey // Type of the security scheme
+        Name = "Authorization", 
+        Type = SecuritySchemeType.ApiKey 
     });
 
-    // Add a security requirement to apply the security definition
+    
     opt.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -75,10 +74,10 @@ builder.Services.AddSwaggerGen(opt =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer" // Reference to the security definition created above
+                    Id = "Bearer"
                 }
             },
-            new string[] {} // No specific scopes, just use the Bearer token
+            new string[] {} 
         }
     });
 });

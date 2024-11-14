@@ -28,7 +28,7 @@ namespace Rewards.Business.Helper
             campaign.Name = campaignDto.Name;
             campaign.ValidFrom = campaignDto.ValidFrom;
             campaign.ValidTo = campaignDto.ValidTo;
-            campaign.AdminId = 1; // ToDo - claims
+            campaign.AdminId = 1;
 
             return campaign;
         }
