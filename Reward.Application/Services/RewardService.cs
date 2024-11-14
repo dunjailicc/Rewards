@@ -2,6 +2,7 @@
 using Rewards.Application.DTO;
 using Rewards.Application.Interfaces;
 using Rewards.Application.Pagination;
+using Rewards.Business.Exceptions;
 using Rewards.Business.Helper;
 using Rewards.DataAccess.Models;
 using Rewards.DataAccess.Repositories;
@@ -29,14 +30,14 @@ namespace Rewards.Business.Services
 
             if (!validationResult.IsValid)
             {
-                // throw new ValidationException(validationResult.Errors);
+                throw new ValidationException("Input is not valid.");
             }
 
             var campaignById = await _campaignService.GetCampaignByIdAsync(rewardFromDto.Campaign.Id);
 
-            if(campaignById == null) 
-            { 
-                // throw new KeyNotFoundException()
+            if(campaignById is null) 
+            {
+                throw new NotFoundException("Campaign not found.");
             }
 
             return await _rewardRepository.CreateRewardAsync(rewardFromDto);
@@ -45,11 +46,20 @@ namespace Rewards.Business.Services
         public async Task<PaginatedResult<Reward>> GetRewardsAsync(DateTime? date, int? agentId, int? pageNumber, int? itemsPerPage)
         {
             var rewards = await _rewardRepository.GetRewardsAsync(date, agentId, pageNumber, itemsPerPage);
+            if(rewards is null)
+            {
+                throw new NotFoundException("Rewards not found.");
+            }
             return rewards;
         }
 
         public async Task<Reward> UpdateRewardAsync(int id, RewardDto rewardDto)
-        {   
+        {
+            var existingReward = await _rewardRepository.GetRewardByIdAsync(id);
+            
+            if (existingReward is null)
+                throw new NotFoundException("Reward not found.");
+            
             var rewardFromDto = Mapper.Map(rewardDto);
             var updatedReward = await _rewardRepository.UpdateRewardAsync(id, rewardFromDto);
 
@@ -58,6 +68,11 @@ namespace Rewards.Business.Services
 
         public async Task DeleteRewardAsync(int rewardId)
         {
+            var existingReward = await _rewardRepository.GetRewardByIdAsync(rewardId);
+
+            if (existingReward is null)
+                throw new NotFoundException("Reward not found.");
+
             await _rewardRepository.DeleteRewardAsync(rewardId);
         }
 

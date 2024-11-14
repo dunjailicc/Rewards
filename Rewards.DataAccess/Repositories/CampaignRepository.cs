@@ -6,9 +6,9 @@ namespace Rewards.DataAccess.Repositories
     public interface ICampaignRepository
     {
         public Task<Campaign> CreateCampaignAsync(Campaign campaign);
-
         public Task<PaginatedResult<Campaign>> GetCampaignsAsync(DateTime? date, int? agentId, int? pageNumber, int? itemsPerPage);
         public Task<Campaign> GetCampaignByIdAsync(int campaignId);
+        public Task DeleteCampaignAsync(int campaignId);
     }
     public class CampaignRepository : ICampaignRepository
     {   
@@ -29,34 +29,28 @@ namespace Rewards.DataAccess.Repositories
             return newCampaign.Entity;
         }
 
-        public async Task<Campaign> GetCampaignByIdAsync(int campaignId)
+        public async Task DeleteCampaignAsync(int campaignId)
         {
-            var campaign = await _dbContext.Campaigns.FindAsync(campaignId);
-            if(campaign == null) 
-            { 
-                // throw Exception
-                                       
-            }
+            var campaignById = await _dbContext.Campaigns.FindAsync(campaignId);
 
-            return campaign;
+            _dbContext.Campaigns.Remove(campaignById);
+            await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<Campaign> GetCampaignByIdAsync(int campaignId) => await _dbContext.Campaigns.FindAsync(campaignId);
 
         public async Task<PaginatedResult<Campaign>> GetCampaignsAsync(DateTime? date, int? adminId, int? pageNumber, int? itemsPerPage)
         {
             var query = _dbContext.Campaigns.AsQueryable();
 
-            if (adminId != null && date == null)
+            if (adminId is not null)
             {
                 query = query.Where(c => c.AdminId == adminId);
 
             }
-            else if (date != null && adminId == null)
+            if (date is not null)
             {
                 query = query.Where(r => r.ValidFrom == date);
-            }
-            else if (date != null && adminId != null)
-            {
-                query = query.Where(r => r.AdminId == adminId && r.ValidFrom == date);
             }
 
             var result = await _paginationUtils.ApplyPagination(query, pageNumber, itemsPerPage);

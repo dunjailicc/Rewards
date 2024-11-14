@@ -6,6 +6,7 @@ using Rewards.Business.Validators;
 using Rewards.DataAccess;
 using Rewards.DataAccess.Repositories;
 using Microsoft.Extensions.Azure;
+using Rewards.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

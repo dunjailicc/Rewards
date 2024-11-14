@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Rewards.Application.Pagination;
 using Rewards.Business.DTO;
 using Rewards.Business.DTO.Filters;
+using Rewards.Business.Exceptions;
 using Rewards.DataAccess.Models;
 using Rewards.DataAccess.Repositories;
 using System.Text;
@@ -56,7 +57,7 @@ namespace Rewards.Business.Services
 
             if (recordFromDb is null)
             {
-                throw new Exception("Not found."); // TODO -custom exception
+                throw new NotFoundException("Purchase record not found."); 
             }
 
             return new PurchaseRecordDto
@@ -83,9 +84,9 @@ namespace Rewards.Business.Services
         public async Task StoreFileAndSendMessageToQueueAsync(int campaignId, IFormFile file)
         {   
             // TODO - check if campaignId exists in db
-            if (!file.FileName.EndsWith(".csv"))
+            if (file is null || !file.FileName.EndsWith(".csv"))
             {
-                //throw new ArgumentException("File must be a CSV.");
+                throw new InvalidFileFormatException("File must be CSV.");
             }
 
             var newFileName = Guid.NewGuid().ToString() + ".csv";
@@ -95,10 +96,8 @@ namespace Rewards.Business.Services
 
             if (file.Length > 0)
             {
-                // Get a blob client for the specific file
                 var blobClient = blobContainerClient.GetBlobClient(newFileName);
 
-                // Upload the file
                 using (var stream = file.OpenReadStream())
                 {
                     var blobInfo = await blobClient.UploadAsync(stream, overwrite: false); 

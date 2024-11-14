@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Rewards.Application.Pagination;
 using Rewards.Business.DTO;
+using Rewards.Business.Exceptions;
 using Rewards.Business.Helper;
 using Rewards.DataAccess.Models;
 using Rewards.DataAccess.Repositories;
@@ -22,28 +23,33 @@ namespace Rewards.Business.Services
             var validationResult = _validator.Validate(campaignFromDto);
             if (!validationResult.IsValid)
             {
-                //throw new ValidationException(validationResult.Errors);
+                throw new ValidationException("The input is not valid.");
             }
             return await _campaignRepository.CreateCampaignAsync(campaignFromDto);
         }
 
-        public Task DeleteCampaignAsync(int campaignId)
+        public async Task DeleteCampaignAsync(int campaignId)
         {
-            throw new NotImplementedException();
+            var existingCampaign = await _campaignRepository.GetCampaignByIdAsync(campaignId);
+            if (existingCampaign != null)
+            {
+                throw new NotFoundException("Campaign not found.");
+            }
+            await _campaignRepository.DeleteCampaignAsync(campaignId);
         }
 
         public async Task<Campaign> GetCampaignByIdAsync(int campaignId)
         {   
-            if(campaignId <= 0)
+            if (campaignId <= 0)
             {
-                // throw new Exception()
+                throw new ValidationException("The input is not valid.");
             }
             
             var campaign = await _campaignRepository.GetCampaignByIdAsync(campaignId);
 
-            if(campaign == null)
+            if (campaign is null)
             {
-                // throw new Exception()
+                throw new NotFoundException("Campaign not found.");
             }
 
             return campaign;

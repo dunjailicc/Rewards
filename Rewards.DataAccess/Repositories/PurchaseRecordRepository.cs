@@ -32,11 +32,11 @@ namespace Rewards.DataAccess.Repositories
         {
             var query = _context.PurchaseRecords.AsQueryable();
 
-            if (customerId != null)
+            if (customerId is not null)
             {
                 query = query.Where(r => r.CustomerId == customerId);
             }
-            if (campaignId != null)
+            if (campaignId is not null)
             {
                 query = query.Where(r => r.CampaignId == campaignId);
             }
