@@ -5,7 +5,7 @@ using Rewards.Application.Interfaces;
 
 namespace Rewards.Controllers
 {
-    [Authorize(Roles = "agent")]
+    //[Authorize(Roles = "agent")]
     [ApiController]
     [Route("api/[controller]")]
     public class RewardController : ControllerBase

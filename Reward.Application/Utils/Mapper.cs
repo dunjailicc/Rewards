@@ -12,10 +12,11 @@ namespace Rewards.Business.Helper
 
             reward.ValidFrom = rewardDto.ValidFrom;
             reward.ValidTo = rewardDto.ValidTo;
-            reward.AgentId = 1; // ToDo - claims
+            reward.AgentId = reward.AgentId;
             reward.CustomerId = rewardDto.CusotmerId;
-            reward.Campaign.Id = rewardDto.CampaignId;
+            reward.CampaignId = rewardDto.CampaignId;
             reward.DiscountPercentage = rewardDto.DiscountPercentage;
+            reward.CreatedAt = DateTime.UtcNow;
 
             return reward;
         }

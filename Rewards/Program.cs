@@ -6,11 +6,13 @@ using Microsoft.OpenApi.Models;
 using Rewards.API.Middlewares;
 using Rewards.Application.Interfaces;
 using Rewards.Application.Pagination;
+using Rewards.Business.Caching;
 using Rewards.Business.Services;
 using Rewards.Business.Validators;
 using Rewards.DataAccess;
 using Rewards.DataAccess.Repositories;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +42,12 @@ builder.Services.AddAuthentication(options =>
             };
             });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    // Or to ignore cycles entirely, use:
+    // options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.AddMemoryCache();
 
@@ -83,6 +90,7 @@ builder.Services.AddTransient<ICampaignService, CampaignService>();
 builder.Services.AddTransient<IPurchaseReportService, PurchaseReportService>();
 builder.Services.AddTransient<IPurchaseRecordRepository, PurchaseRecordRepository>();
 builder.Services.AddTransient<IPaginationUtils, PaginationUtils>();
+builder.Services.AddTransient<IRewardCache, RewardCache>();
 builder.Services.AddAzureClients(clientBuilder =>
 {
     clientBuilder.AddBlobServiceClient(builder.Configuration["localstorage:blob"]!, preferMsi: true);

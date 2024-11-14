@@ -7,7 +7,7 @@ namespace Rewards.Business.Validators
     {
         public RewardValidator() {
 
-            RuleFor(r => r.Campaign.Id)
+            RuleFor(r => r.CampaignId)
                .NotEmpty().WithMessage("CampaignId is required.");
 
             RuleFor(r => r.CustomerId)

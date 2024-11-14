@@ -8,8 +8,10 @@
         public int CustomerId { get; set; }
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
-        public DateTime createdAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public Campaign Campaign { get; set; }
+
+        public int CampaignId { get; set;}
     }
 }

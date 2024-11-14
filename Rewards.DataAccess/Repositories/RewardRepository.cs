@@ -32,7 +32,7 @@ namespace Rewards.DataAccess.Repositories
             return newReward.Entity;
         }
 
-        public async Task<PaginatedResult<Reward>> GetRewardsAsync(DateTime? date, int? agentId, int? pageNumber, int? itemsPerPage)
+        public async Task<PaginatedResult<Reward>> GetRewardsAsync(DateTime? createdDate, int? agentId, int? pageNumber, int? itemsPerPage)
         {
             var query = _dbContext.Rewards.AsQueryable();
 
@@ -41,9 +41,9 @@ namespace Rewards.DataAccess.Repositories
                 query = query.Where(r => r.AgentId == agentId);
 
             }
-            if(date is not null)
+            if(createdDate is not null)
             {
-                query = query.Where(r => r.ValidFrom == date);
+                query = query.Where(r => r.CreatedAt.Date == createdDate.Value.Date);
             }
 
             var result = await _paginationUtils.ApplyPagination(query, pageNumber, itemsPerPage);

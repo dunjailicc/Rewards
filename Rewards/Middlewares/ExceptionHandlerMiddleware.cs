@@ -1,4 +1,5 @@
 ﻿using Rewards.Business.Exceptions;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace Rewards.API.Middlewares
@@ -54,6 +55,16 @@ namespace Rewards.API.Middlewares
                     {
                         StatusCode = (int)HttpStatusCode.BadRequest,
                         Message = notValidEx.Message,
+                        Details = "Validation failed. Please check your input."
+                    };
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+
+                case ValidationException validationEx:
+                    response = new
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = validationEx.Message,
                         Details = "Validation failed. Please check your input."
                     };
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
