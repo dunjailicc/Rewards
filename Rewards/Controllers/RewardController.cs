@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rewards.Application.DTO;
 using Rewards.Application.Interfaces;
 
 namespace Rewards.Controllers
 {
+    [Authorize(Roles = "agent")]
     [ApiController]
     [Route("api/[controller]")]
     public class RewardController : ControllerBase

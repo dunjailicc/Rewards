@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Rewards.Business.DTO;
 using Rewards.Business.Services;
-using Rewards.Controllers;
 
 namespace Rewards.API.Controllers
 {
+    [Authorize(Roles = "agent")]
     [ApiController]
     [Route("api/[controller]")]
     public class CampaignController : ControllerBase
